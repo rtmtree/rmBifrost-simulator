@@ -17,6 +17,11 @@
 #include "lvgl/demos/lv_demos.h"
 #include "glob.h"
 
+// #include "boot_screen.h"
+// #include "constants.h"
+
+// #include "main/src/boot_screen.h"
+
 /*********************
  *      DEFINES
  *********************/
@@ -28,13 +33,13 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static lv_display_t * hal_init(int32_t w, int32_t h);
+static lv_display_t *hal_init(int32_t w, int32_t h);
 
 /**********************
  *  STATIC VARIABLES
  **********************/
-
-/********************** 
+// shared_ptr<lvgl_renderer> lvgl_renderer_inst;
+/**********************
  *      MACROS
  **********************/
 
@@ -64,6 +69,23 @@ extern void freertos_main(void);
  *   GLOBAL FUNCTIONS
  **********************/
 
+// void setup_animation() {
+//     welcome_json = get_resource_file("animations/hello.json");
+
+//     auto lottie_obj = lv_lottie_create(lv_screen_active());
+//     lv_lottie_set_src_data(lottie_obj, welcome_json.data(), welcome_json.size());
+//     lv_anim_set_repeat_count(lv_lottie_get_anim(lottie_obj), 1);
+
+//     int width = static_cast<int>(std::round(SCREEN_WIDTH / 1.5));
+//     int height = width / 3;
+//     lottie_buf.resize(width * height * 4);
+//     lv_rlottie_set_buffer(lottie_obj, width, height, lottie_buf.data());
+
+//     lv_obj_align(lottie_obj, LV_ALIGN_CENTER, 0, 0);
+
+//     deletion_queue.push_back(lottie_obj);
+// }
+
 int main(int argc, char **argv)
 {
   (void)argc; /*Unused*/
@@ -75,23 +97,64 @@ int main(int argc, char **argv)
   /*Initialize the HAL (display, input devices, tick) for LVGL*/
   hal_init(320, 480);
 
-  #if LV_USE_OS == LV_OS_NONE
- 
-  lv_demo_widgets();
+#if LV_USE_OS == LV_OS_NONE
 
-  while(1) {
+  // lv_demo_widgets();
+
+
+    // welcome_json = get_resource_file("animations/hello.json");
+
+    // auto lottie_obj = lv_lottie_create(lv_screen_active());
+    // lv_lottie_set_src_data(lottie_obj, welcome_json.data(), welcome_json.size());
+    // lv_anim_set_repeat_count(lv_lottie_get_anim(lottie_obj), 1);
+
+    // int width = static_cast<int>(std::round(SCREEN_WIDTH / 1.5));
+    // int height = width / 3;
+    // lottie_buf.resize(width * height * 4);
+    // lv_lottie_set_buffer(lottie_obj, width, height, lottie_buf.data());
+
+    // lv_obj_align(lottie_obj, LV_ALIGN_CENTER, 0, 0);
+
+    // deletion_queue.push_back(lottie_obj);
+    // lv_obj_delete(lottie_obj);
+
+  // lvgl_renderer_inst = std::make_shared<lvgl_renderer>(display_config{});
+  // lvgl_renderer_inst->initialize();
+  // auto boot_screen_inst = std::make_shared<boot_screen>(lvgl_renderer_inst);
+  // auto boot_screen_thread = std::thread([&] { boot_screen_inst->start(); });
+
+  // boot_screen_thread.join();
+
+  // spdlog::debug("Presenting launch options");
+  // set_global_refresh_hint(COLOR_FAST);
+  // setup_animation();
+
+  // std::this_thread::sleep_for(std::chrono::milliseconds(4000));
+
+  // set_global_refresh_hint(MONOCHROME);
+  // setup_boot_selection();
+
+  // wait for the user to select an option
+  // std::unique_lock<std::mutex> lk(cv_m);
+  // cv.wait(lk, [this] { return state != IN_FLIGHT; });
+  // lk.unlock();
+
+  // lvgl_renderer_inst->refresh({ 0, 0 }, { SCREEN_WIDTH, SCREEN_HEIGHT }, FULL);
+
+  while (1)
+  {
     /* Periodically call the lv_task handler.
      * It could be done in a timer interrupt or an OS task too.*/
     lv_timer_handler();
     usleep(5 * 1000);
   }
 
-  #elif LV_USE_OS == LV_OS_FREERTOS
+#elif LV_USE_OS == LV_OS_FREERTOS
 
   /* Run FreeRTOS and create lvgl task */
-  freertos_main();  
+  freertos_main();
 
-  #endif
+#endif
 
   return 0;
 }
@@ -104,29 +167,29 @@ int main(int argc, char **argv)
  * Initialize the Hardware Abstraction Layer (HAL) for the LVGL graphics
  * library
  */
-static lv_display_t * hal_init(int32_t w, int32_t h)
+static lv_display_t *hal_init(int32_t w, int32_t h)
 {
 
   lv_group_set_default(lv_group_create());
 
-  lv_display_t * disp = lv_sdl_window_create(w, h);
+  lv_display_t *disp = lv_sdl_window_create(w, h);
 
-  lv_indev_t * mouse = lv_sdl_mouse_create();
+  lv_indev_t *mouse = lv_sdl_mouse_create();
   lv_indev_set_group(mouse, lv_group_get_default());
   lv_indev_set_display(mouse, disp);
   lv_display_set_default(disp);
 
   LV_IMAGE_DECLARE(mouse_cursor_icon); /*Declare the image file.*/
-  lv_obj_t * cursor_obj;
+  lv_obj_t *cursor_obj;
   cursor_obj = lv_image_create(lv_screen_active()); /*Create an image object for the cursor */
-  lv_image_set_src(cursor_obj, &mouse_cursor_icon);           /*Set the image source*/
-  lv_indev_set_cursor(mouse, cursor_obj);             /*Connect the image  object to the driver*/
+  lv_image_set_src(cursor_obj, &mouse_cursor_icon); /*Set the image source*/
+  lv_indev_set_cursor(mouse, cursor_obj);           /*Connect the image  object to the driver*/
 
-  lv_indev_t * mousewheel = lv_sdl_mousewheel_create();
+  lv_indev_t *mousewheel = lv_sdl_mousewheel_create();
   lv_indev_set_display(mousewheel, disp);
   lv_indev_set_group(mousewheel, lv_group_get_default());
 
-  lv_indev_t * kb = lv_sdl_keyboard_create();
+  lv_indev_t *kb = lv_sdl_keyboard_create();
   lv_indev_set_display(kb, disp);
   lv_indev_set_group(kb, lv_group_get_default());
 
