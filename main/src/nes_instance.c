@@ -2,16 +2,12 @@
 #include "../../lv_lib_100ask/src/lv_100ask_nes/lv_100ask_nes.h"
 #include "../../lv_lib_100ask/src/lv_100ask_nes/InfoNES.h"
 #include "../../lv_lib_100ask/src/lv_100ask_nes/InfoNES_System.h"
-#include "lvgl/src/misc/lv_event.h"
+#include "../../lvgl/src/misc/lv_event.h"
 #include <string.h>
 
 #include "nes_instance.h"
 
-static const char *btnm_dir_map[] = {"1", LV_SYMBOL_UP, "3", "\n", LV_SYMBOL_LEFT, "5", LV_SYMBOL_RIGHT, "\n", "4", LV_SYMBOL_DOWN, "6", ""};
-static const char *btnm_menu_map[] = {"SELECT", LV_SYMBOL_LIST, "START", ""};
-static const char *btnm_opt_map[] = {"A", "B", "3", ""};
-static lv_obj_t *red_slider, *green_slider, *blue_slider, *intense_slider;
-static lv_obj_t *img1;
+
 
 static void file_explorer_event_cb(lv_event_t *e)
 {
@@ -81,7 +77,7 @@ static void menu_scroll_event_cb(lv_event_t *e)
     }
 }
 
-static lv_obj_t *create_text(lv_obj_t *parent, const char *icon, const char *txt, lv_menu_builder_variant_t builder_variant)
+static lv_obj_t *create_text(lv_obj_t *parent, const char *icon, const char *txt, lv_menu_builder_variant_t_internal builder_variant)
 {
     lv_obj_t *obj = lv_menu_cont_create(parent);
 
@@ -102,7 +98,7 @@ static lv_obj_t *create_text(lv_obj_t *parent, const char *icon, const char *txt
         lv_obj_set_flex_grow(label, 1);
     }
 
-    if (builder_variant == LV_MENU_ITEM_BUILDER_VARIANT_2 && icon && txt)
+    if (builder_variant == LV_MENU_ITEM_BUILDER_VARIANT_2_INTERNAL && icon && txt)
     {
         lv_obj_add_flag(img, LV_OBJ_FLAG_FLEX_IN_NEW_TRACK);
         lv_obj_swap(img, label);
@@ -308,12 +304,8 @@ static void init_my_nes_front_end(lv_obj_t *parent)
     // lv_obj_align(file_explorer, LV_ALIGN_TOP_RIGHT, 0 ,0);
     lv_obj_set_size(file_explorer, LV_PCT(100), LV_PCT(100));
 
-#if LV_USE_FS_WIN32
-    lv_file_explorer_open_dir(file_explorer, "D:/ROM/NES");
-#else
-    lv_file_explorer_open_dir(file_explorer, "/root/ROM/NES");
 
-#endif
+    lv_file_explorer_open_dir(file_explorer, "/home/root");
 
     lv_obj_add_event_cb(file_explorer, file_explorer_event_cb, LV_EVENT_VALUE_CHANGED, parent);
 
@@ -349,7 +341,7 @@ void start_nes(void)
 
 #if LV_100ASK_NES_PLATFORM_POSIX
     pthread_t tid1;
-    int ret = pthread_create(&tid1, NULL, &lv_100ask_nes_run, (void *)my_nes); // 创建线程传入变量a的地址
+    int ret = pthread_create(&tid1, NULL, &lv_100ask_nes_run_wrapper, (void *)my_nes); // 创建线程传入变量a的地址
     if (ret != 0)
     {
         LV_LOG_ERROR("Pthread create error!");
