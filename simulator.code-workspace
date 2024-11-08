@@ -127,7 +127,16 @@
 			"lv_types.h": "c",
 			"cmrc.hpp": "c",
 			"__tree": "c",
-			"lv_demos.h": "c"
+			"lv_demos.h": "c",
+			"lv_lib_100ask.h": "c",
+			"lv_lib_100ask_conf.h": "c",
+			"lv_100ask_page_manager.h": "c",
+			"lv_100ask_screenshot.h": "c",
+			"lv_100ask_nes.h": "c",
+			"lv_100ask_example_pinyin_ime.h": "c",
+			"lv_100ask_pinyin_ime.h": "c",
+			"lv_100ask_file_explorer.h": "c",
+			"lv_event.h": "c"
 		},
 	},
 	// tasks.json section
