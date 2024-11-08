@@ -136,7 +136,11 @@
 			"lv_100ask_example_pinyin_ime.h": "c",
 			"lv_100ask_pinyin_ime.h": "c",
 			"lv_100ask_file_explorer.h": "c",
-			"lv_event.h": "c"
+			"lv_event.h": "c",
+			"infones_system.h": "c",
+			"infones.h": "c",
+			"lv_examples.h": "c",
+			"nes_instance.h": "c"
 		},
 	},
 	// tasks.json section
